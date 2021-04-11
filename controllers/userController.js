@@ -1,8 +1,9 @@
+const bcrypt = require('bcryptjs')
 const db = require('../models')
+const User = db.User
 const imgur = require('imgur-node-api')
 const helpers = require('../_helpers')
-const bcrypt = require('bcryptjs')
-const User = db.User
+
 const userController = {
   signUpPage: (req, res) => {
     return res.render('signup')
@@ -48,7 +49,6 @@ const userController = {
   },
   getUser: (req, res) => {
     return User.findByPk(req.params.id).then(user => {
-      console.log(user.toJSON().image)
       return res.render('user', {
         profile: user.toJSON()
       })
@@ -56,19 +56,17 @@ const userController = {
   },
   editUser: (req, res) => {
     return User.findByPk(req.params.id).then(user => {
-      return res.render('editUser', {
-        user: user.toJSON()
-      })
+      res.render('editUser', { user: user.toJSON() })
     })
   },
   putUser: (req, res) => {
-    const { file } = req
-    const { name } = req.body
-    const id = req.params.id
     if (!req.body.name) {
       req.flash('error_messages', "name didn't exist")
       return res.redirect('back')
     }
+    const { name } = req.body
+    const id = req.params.id
+    const { file } = req
 
     if (file) {
       imgur.setClientID(process.env.IMGUR_CLIENT_ID);
@@ -89,10 +87,10 @@ const userController = {
       return User.findByPk(id)
         .then(user => {
           user.update({ name, image: user.image })
-        })
-        .then(user => {
-          req.flash('success_messages', 'user was successfully to update')
-          return res.redirect(`/users/${id}`)
+            .then(user => {
+              req.flash('success_messages', 'user was successfully to update')
+              return res.redirect(`/users/${id}`)
+            })
         })
         .catch(err => console.log(err))
     }

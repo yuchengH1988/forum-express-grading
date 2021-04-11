@@ -1,3 +1,4 @@
+const passport = require('passport')
 const helpers = require('../_helpers')
 
 const restController = require('../controllers/restController.js')
