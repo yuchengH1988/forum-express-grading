@@ -1,0 +1,16 @@
+<div class="row mt-3">
+  <div class="col-lg-4 col-md-6">
+    <img class="img-responsive center-block" src="{{profile.image}}" style="width: 250px;margin-bottom: 25px;">
+  </div>
+  <div class="col-lg-8 col-md-6">
+    <ul class="list-unstyled">
+      <li><strong>Name:</strong> {{profile.name}}</li>
+      <li><strong>Email:</strong> {{profile.email}}</li>
+    </ul>
+    {{#ifCond profile.id user.id}}
+    <a href='/users/{{profile.id}}/edit'>
+      <button type="button" class="btn btn-primary">Edit</button>
+    </a>
+    {{/ifCond}}
+  </div>
+</div>
