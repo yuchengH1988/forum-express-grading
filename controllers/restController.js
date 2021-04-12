@@ -3,7 +3,9 @@ const Restaurant = db.Restaurant
 const Category = db.Category
 const Comment = db.Comment
 const User = db.User
+const sequelize = db.sequelize
 const pageLimit = 10
+const helpers = require('../_helpers')
 
 const restController = {
   getRestaurants: (req, res) => {
@@ -62,8 +64,8 @@ const restController = {
         { model: User, as: 'LikedUsers' },
         { model: Comment, include: [User] }]
     }).then(restaurant => {
-      const isFavorited = restaurant.FavoritedUsers.map(d => d.id).includes(req.user.id)
-      const isLiked = restaurant.LikedUsers.map(d => d.id).includes(req.user.id)
+      const isFavorited = restaurant.FavoritedUsers.map(d => d.id).includes(helpers.getUser(req).id)
+      const isLiked = restaurant.LikedUsers.map(d => d.id).includes(helpers.getUser(req).id)
       return restaurant.increment('viewCounts', { by: 1 })
         .then(() => {
           res.render('restaurant', {
@@ -106,6 +108,37 @@ const restController = {
     }).then(restaurant => {
       return res.render('dashboard', { restaurant: restaurant.toJSON() })
     })
+  },
+  topTen: async (req, res, next) => {
+    try {
+      const userId = helpers.getUser(req).id
+      const rankLimit = 10
+      let restaurants = await Restaurant.findAll({
+        include: [Category, { model: User, as: 'FavoritedUsers' }],
+        attributes: {
+          include: [
+            [
+              sequelize.literal('(SELECT COUNT(*) FROM Favorites WHERE Favorites.RestaurantId = Restaurant.id GROUP BY favorites.RestaurantId)'), 'favoriteCount'
+            ]
+          ]
+        },
+        order: [
+          [sequelize.literal('favoriteCount'), 'DESC']
+        ],
+        limit: rankLimit
+      })
+      restaurants = restaurants.map(r => ({
+        ...r.dataValues,
+        description: r.dataValues.description.substring(0, 20),
+        favoriteCount: r.FavoritedUsers.length,
+        isFavorited: r.FavoritedUsers.map(d => d.id).includes(userId)
+      }))
+      restaurants = restaurants.sort((a, b) => b.favoriteCount - a.favoriteCount)
+      restaurants = restaurants.slice(0, rankLimit)
+      return res.render('topRestaurants', { restaurants })
+    } catch (error) {
+      next(error)
+    }
   }
 }
 module.exports = restController
