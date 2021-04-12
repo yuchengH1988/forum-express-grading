@@ -1,6 +1,8 @@
 const bcrypt = require('bcryptjs')
 const db = require('../models')
 const User = db.User
+const Comment = db.Comment
+const Restaurant = db.Restaurant
 const imgur = require('imgur-node-api')
 const helpers = require('../_helpers')
 
@@ -47,12 +49,19 @@ const userController = {
     req.logout()
     res.redirect('/signin')
   },
-  getUser: (req, res) => {
-    return User.findByPk(req.params.id).then(user => {
-      return res.render('user', {
-        profile: user.toJSON()
+  getUser: async (req, res) => {
+    try {
+      const user = await User.findByPk(req.params.id, {
+        include: [{ model: Comment, include: [Restaurant] }]
       })
-    })
+      const comments = user.Comments.map((el) => ({
+        ...el.dataValues,
+        restaurantName: el.Restaurant.name,
+        restaurantId: el.Restaurant.id,
+        restaurantImage: el.Restaurant.image
+      }))
+      res.render('user', { profile: user.toJSON(), comments })
+    } catch (err) { console.log(err) }
   },
   editUser: (req, res) => {
     return User.findByPk(req.params.id).then(user => {

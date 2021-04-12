@@ -14,3 +14,17 @@
     {{/ifCond}}
   </div>
 </div>
+<div class="card">
+  <h5 class="card-header"><span class="badge badge-secondary badge-pill">{{comments.length}} </span>已評論餐廳</h5>
+  <div class="row">
+
+    {{#each comments}}
+    <div class="card-body" style="width:150px">
+      <img class="card-img-top" src="{{this.restaurantImage}}" alt="Card image">
+      <a class="card-title" href="/restaurants/{{this.RestaurantId}}">{{this.restaurantName}}</a>
+      <p class="card-text">{{this.text}}</p>
+    </div>
+    {{/each}}
+  </div>
+
+</div>
