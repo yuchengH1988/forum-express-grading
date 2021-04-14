@@ -17,6 +17,12 @@ const adminService = {
       callback({ restaurants })
     })
   },
+  getRestaurant: (req, res, callback) => {
+    return Restaurant.findByPk(req.params.id, { include: [Category] }).then(restaurant => {
+      callback({ restaurant: restaurant.toJSON() })
+    })
+  }
+  ,
 }
 
 
