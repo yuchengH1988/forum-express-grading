@@ -14,17 +14,71 @@
     {{/ifCond}}
   </div>
 </div>
-<div class="card">
-  <h5 class="card-header"><span class="badge badge-secondary badge-pill">{{comments.length}} </span>已評論餐廳</h5>
-  <div class="row">
-
-    {{#each comments}}
-    <div class="card-body" style="width:150px">
-      <img class="card-img-top" src="{{this.restaurantImage}}" alt="Card image">
-      <a class="card-title" href="/restaurants/{{this.RestaurantId}}">{{this.restaurantName}}</a>
-      <p class="card-text">{{this.text}}</p>
+<div class="row mb-3">
+  {{!-- 追蹤者 左上 --}}
+  <div class="col-lg-4">
+    <div class="card">
+      <div class="card-header">
+        {{followings.length}} followings (追蹤者)
+      </div>
+      <div class="card-body">
+        {{#each followings}}
+        <a href="/users/{{this.followingId}}">
+          <img class="img-responsive center-block" src="{{this.followingImage}}"
+            style="width: 75px; height: 75px; margin:5px;">
+        </a>
+        {{/each}}
+      </div>
     </div>
-    {{/each}}
   </div>
-
+  {{!-- 已評論餐廳 右上 --}}
+  <div class="col-lg-8">
+    <div class="card">
+      <div class="card-header">
+        {{comments.length}} 已評論餐廳
+      </div>
+      <div class="card-body">
+        {{#each comments}}
+        <a href="/restaurants/{{this.RestaurantId}}">
+          <img class="img-responsive center-block" src="{{this.restaurantImage}}"
+            style="width: 75px; height: 75px; margin:5px;">
+        </a>
+        {{/each}}
+      </div>
+    </div>
+  </div>
+</div>
+<div class="row">
+  {{!-- 追隨者 左下 --}}
+  <div class="col-lg-4">
+    <div class="card">
+      <div class="card-header">
+        {{followers.length}} followers (追隨者)
+      </div>
+      <div class="card-body">
+        {{#each followers}}
+        <a href="/users/{{this.followerId}}">
+          <img class="img-responsive center-block" src="{{this.followerImage}}"
+            style="width: 75px; height: 75px; margin:5px;">
+        </a>
+        {{/each}}
+      </div>
+    </div>
+  </div>
+  {{!-- 收藏的餐廳 --}}
+  <div class="col-lg-8">
+    <div class="card">
+      <div class="card-header">
+        {{favoritedRestaurants.length}} 收藏的餐廳
+      </div>
+      <div class="card-body">
+        {{#each favoritedRestaurants}}
+        <a href="/restaurants/{{this.RestaurantId}}">
+          <img class="img-responsive center-block" src="{{this.restaurantImage}}"
+            style="width: 75px; height: 75px; margin:5px;">
+        </a>
+        {{/each}}
+      </div>
+    </div>
+  </div>
 </div>
