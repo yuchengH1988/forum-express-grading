@@ -55,15 +55,31 @@ const userController = {
   getUser: async (req, res) => {
     try {
       const user = await User.findByPk(req.params.id, {
-        include: [{ model: Comment, include: [Restaurant] }]
+        include: [{ model: Comment, include: [Restaurant] },
+        { model: User, as: 'Followings' }, { model: User, as: 'Followers' }, { model: Restaurant, as: 'FavoritedRestaurants' }]
       })
-      const comments = user.Comments.map((el) => ({
-        ...el.dataValues,
-        restaurantName: el.Restaurant.name,
+
+      const followings = user.dataValues.Followings.map((following) => ({
+        followingId: following.id,
+        followingImage: following.image
+      }))
+
+      const followers = user.dataValues.Followers.map((follower) => ({
+        followerId: follower.id,
+        followerImage: follower.image
+      }))
+
+      const comments = user.dataValues.Comments.map((el) => ({
         restaurantId: el.Restaurant.id,
         restaurantImage: el.Restaurant.image
       }))
-      res.render('user', { profile: user.toJSON(), comments })
+
+      const favoritedRestaurants = user.dataValues.FavoritedRestaurants.map((restaurant) => ({
+        restaurantId: restaurant.id,
+        restaurantImage: restaurant.image
+      }))
+
+      res.render('user', { profile: user.toJSON(), comments, followings, followers, favoritedRestaurants })
     } catch (err) { console.log(err) }
   },
   editUser: (req, res) => {
@@ -85,7 +101,7 @@ const userController = {
       imgur.upload(file.path, (err, img) => {
         return User.findByPk(id)
           .then((user) => {
-            user.update({
+            return user.update({
               name,
               image: file ? img.data.link : user.image,
             })

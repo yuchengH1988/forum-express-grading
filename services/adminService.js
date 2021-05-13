@@ -16,11 +16,13 @@ const adminService = {
     }).then(restaurants => {
       callback({ restaurants })
     })
+      .catch(error => console.log(error))
   },
   getRestaurant: (req, res, callback) => {
     return Restaurant.findByPk(req.params.id, { include: [Category] }).then(restaurant => {
       callback({ restaurant: restaurant.toJSON() })
     })
+      .catch(error => console.log(error))
   },
 
   postRestaurant: (req, res, callback) => {
@@ -42,6 +44,7 @@ const adminService = {
         }).then((restaurant) => {
           callback({ status: 'success', message: 'restaurant was successfully created' })
         })
+          .catch(error => console.log(error))
       })
     } else {
       return Restaurant.create({
@@ -55,6 +58,7 @@ const adminService = {
         .then((restaurant) => {
           callback({ status: 'success', message: 'restaurant was successfully created' })
         })
+        .catch(error => console.log(error))
     }
   },
   putRestaurant: (req, res, callback) => {
@@ -82,6 +86,7 @@ const adminService = {
                 callback({ status: 'success', message: 'restaurant was successfully created' })
               })
           })
+          .catch(error => console.log(error))
       })
     }
     else {
@@ -100,6 +105,7 @@ const adminService = {
               callback({ status: 'success', message: 'restaurant was successfully created' })
             })
         })
+        .catch(error => console.log(error))
     }
   },
   deleteRestaurant: (req, res, callback) => {
@@ -110,6 +116,7 @@ const adminService = {
             callback({ status: 'success', message: '' })
           })
       })
+      .catch(error => console.log(error))
   }
 }
 

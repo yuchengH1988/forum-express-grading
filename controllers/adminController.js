@@ -27,7 +27,9 @@ const adminController = {
       nest: true
     }).then(categories => {
       return res.render('admin/create', { categories })
+
     })
+      .catch(error => console.log(error))
   },
   postRestaurant: (req, res) => {
     adminService.postRestaurant(req, res, (data) => {
@@ -51,6 +53,7 @@ const adminController = {
         })
       })
     })
+      .catch(error => console.log(error))
   },
   putRestaurant: (req, res) => {
     adminService.putRestaurant(req, res, (data) => {
@@ -81,7 +84,7 @@ const adminController = {
             res.redirect('/admin/users')
           })
       })
+      .catch(error => console.log(error))
   }
 }
-
 module.exports = adminController
