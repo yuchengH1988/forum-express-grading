@@ -18,7 +18,11 @@ const authenticatedAdmin = (req, res, next) => {
     return res.json({ status: 'error', message: 'permission denied' })
   }
 }
-// admin
+// admin/users
+router.get('/admin/users', authenticated, authenticatedAdmin, adminController.getUsers)
+router.put('/admin/users/:id/toggleAdmin', authenticated, authenticatedAdmin, adminController.toogleAdmin)
+
+// admin/restaurants
 router.get('/admin/restaurants', authenticated, authenticatedAdmin, adminController.getRestaurants)
 router.get('/admin/restaurants/create', authenticated, authenticatedAdmin, adminController.createRestaurant)
 router.post('/admin/restaurants', authenticated, authenticatedAdmin, upload.single('image'), adminController.postRestaurant)
@@ -27,8 +31,7 @@ router.get('/admin/restaurant/:id', authenticated, authenticatedAdmin, adminCont
 router.delete('/admin/restaurants/:id', authenticated, authenticatedAdmin, adminController.deleteRestaurant)
 router.get('/admin/restaurants/:id/edit', authenticated, authenticatedAdmin, adminController.editRestaurant)
 
-
-// Categories
+// admin/categories
 router.get('/admin/categories/', authenticated, authenticatedAdmin, categoryController.getCategories)
 router.get('/admin/categories/:id', authenticated, authenticatedAdmin, categoryController.getCategories)
 router.post('/admin/categories', authenticated, authenticatedAdmin, categoryController.postCategory)

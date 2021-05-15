@@ -39,6 +39,16 @@ const adminController = {
     adminService.editRestaurant(req, res, (data) => {
       return res.json(data)
     })
+  },
+  getUsers: (req, res) => {
+    adminService.getUsers(req, res, (data) => {
+      return res.json(data)
+    })
+  },
+  toogleAdmin: (req, res) => {
+    adminService.toogleAdmin(req, res, (data) => {
+      return res.json(data)
+    })
   }
 }
 module.exports = adminController

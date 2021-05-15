@@ -139,9 +139,21 @@ const adminService = {
       })
     })
       .catch(error => console.log(error))
+  },
+  getUsers: (req, res, callback) => {
+    return User.findAll({ raw: true }).then(users => { return callback({ users }) })
+  },
+  toogleAdmin: (req, res, callback) => {
+    return User.findByPk(req.params.id)
+      .then(user => {
+        user.update({ ...user, isAdmin: user.isAdmin ? 0 : 1 })
+          .then(user => {
+            let role = user.isAdmin ? "admin" : "user"
+            return callback({ status: 'success', message: `${user.name} is ${role} now.` })
+          })
+      })
+      .catch(error => console.log(error))
   }
 }
-
-
 
 module.exports = adminService
