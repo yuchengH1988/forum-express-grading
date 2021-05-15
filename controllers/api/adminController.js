@@ -1,8 +1,4 @@
-const db = require('../../models')
-const Restaurant = db.Restaurant
-const Category = db.Category
 const adminService = require('../../services/adminService.js')
-
 
 const adminController = {
   getRestaurants: (req, res) => {
