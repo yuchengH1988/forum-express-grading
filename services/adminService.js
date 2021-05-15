@@ -125,6 +125,20 @@ const adminService = {
       callback({ categories })
     })
       .catch(error => console.log(error))
+  },
+  editRestaurant: (req, res, callback) => {
+    Category.findAll({
+      raw: true,
+      nest: true
+    }).then(categories => {
+      return Restaurant.findByPk(req.params.id).then(restaurant => {
+        callback({
+          categories: categories,
+          restaurant: restaurant.toJSON()
+        })
+      })
+    })
+      .catch(error => console.log(error))
   }
 }
 
