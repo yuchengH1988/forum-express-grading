@@ -24,7 +24,6 @@ const adminService = {
     })
       .catch(error => console.log(error))
   },
-
   postRestaurant: (req, res, callback) => {
     if (!req.body.name) {
       return callback({ status: 'error', message: "name didn't exist" })
@@ -116,6 +115,15 @@ const adminService = {
             callback({ status: 'success', message: '' })
           })
       })
+      .catch(error => console.log(error))
+  },
+  createRestaurant: (req, res, callback) => {
+    Category.findAll({
+      raw: true,
+      nest: true
+    }).then(categories => {
+      callback({ categories })
+    })
       .catch(error => console.log(error))
   }
 }
