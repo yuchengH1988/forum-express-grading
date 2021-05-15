@@ -51,4 +51,8 @@ router.delete('/comments/:id', authenticated, authenticatedAdmin, commentControl
 
 //restaurants
 router.get('/restaurants', authenticated, restController.getRestaurants)
+router.get('/restaurants/top', authenticated, restController.topTen)
+router.get('/restaurants/feeds', authenticated, restController.getFeeds)
+router.get('/restaurants/:id', authenticated, restController.getRestaurant)
+router.get('/restaurants/:id/dashboard', authenticated, restController.getDashboard)
 module.exports = router

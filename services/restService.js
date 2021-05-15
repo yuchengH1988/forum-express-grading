@@ -53,7 +53,90 @@ const restService = {
       })
     })
   },
-
+  getRestaurant: (req, res, callback) => {
+    return Restaurant.findByPk(req.params.id, {
+      include: [
+        Category,
+        { model: User, as: 'FavoritedUsers' },
+        { model: User, as: 'LikedUsers' },
+        { model: Comment, include: [User] }]
+    }).then(restaurant => {
+      const isFavorited = restaurant.FavoritedUsers.map(d => d.id).includes(helpers.getUser(req).id)
+      const isLiked = restaurant.LikedUsers.map(d => d.id).includes(helpers.getUser(req).id)
+      return restaurant.increment('viewCounts', { by: 1 })
+        .then(() => {
+          callback({
+            restaurant: restaurant.toJSON(),
+            isFavorited, isLiked
+          })
+        })
+    })
+      .catch(err => res.send(err))
+  },
+  topTen: async (req, res, callback) => {
+    try {
+      const userId = helpers.getUser(req).id
+      const rankLimit = 10
+      let restaurants = await Restaurant.findAll({
+        include: [Category, { model: User, as: 'FavoritedUsers' }],
+        attributes: {
+          include: [
+            [
+              sequelize.literal('(SELECT COUNT(*) FROM Favorites WHERE Favorites.RestaurantId = Restaurant.id GROUP BY favorites.RestaurantId)'), 'favoriteCount'
+            ]
+          ]
+        },
+        order: [
+          [sequelize.literal('favoriteCount'), 'DESC']
+        ],
+        limit: rankLimit
+      })
+      restaurants = restaurants.map(r => ({
+        ...r.dataValues,
+        description: r.dataValues.description.substring(0, 20),
+        favoriteCount: r.FavoritedUsers.length,
+        isFavorited: r.FavoritedUsers.map(d => d.id).includes(userId)
+      }))
+      restaurants = restaurants.sort((a, b) => b.favoriteCount - a.favoriteCount)
+      restaurants = restaurants.slice(0, rankLimit)
+      return callback({ restaurants })
+    } catch (e) {
+      callback(e)
+    }
+  },
+  getFeeds: (req, res, callback) => {
+    return Promise.all([
+      Restaurant.findAll({
+        limit: 10,
+        raw: true,
+        nest: true,
+        order: [['createdAt', 'DESC']],
+        include: [Category]
+      }),
+      Comment.findAll({
+        limit: 10,
+        raw: true,
+        nest: true,
+        order: [['createdAt', 'DESC']],
+        include: [User, Restaurant]
+      })
+    ]).then(([restaurants, comments]) => {
+      return callback({
+        restaurants: restaurants,
+        comments: comments
+      })
+    })
+  },
+  getDashboard: (req, res, callback) => {
+    return Restaurant.findByPk(req.params.id, {
+      include: [
+        Category,
+        { model: Comment, include: [User] }
+      ]
+    }).then(restaurant => {
+      return callback({ restaurant: restaurant.toJSON() })
+    })
+  }
 }
 
 module.exports = restService
