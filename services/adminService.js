@@ -117,9 +117,44 @@ const adminService = {
           })
       })
       .catch(error => console.log(error))
+  },
+  createRestaurant: (req, res, callback) => {
+    Category.findAll({
+      raw: true,
+      nest: true
+    }).then(categories => {
+      callback({ categories })
+    })
+      .catch(error => console.log(error))
+  },
+  editRestaurant: (req, res, callback) => {
+    Category.findAll({
+      raw: true,
+      nest: true
+    }).then(categories => {
+      return Restaurant.findByPk(req.params.id).then(restaurant => {
+        callback({
+          categories: categories,
+          restaurant: restaurant.toJSON()
+        })
+      })
+    })
+      .catch(error => console.log(error))
+  },
+  getUsers: (req, res, callback) => {
+    return User.findAll({ raw: true }).then(users => { return callback({ users }) })
+  },
+  toogleAdmin: (req, res, callback) => {
+    return User.findByPk(req.params.id)
+      .then(user => {
+        user.update({ ...user, isAdmin: user.isAdmin ? 0 : 1 })
+          .then(user => {
+            let role = user.isAdmin ? "admin" : "user"
+            return callback({ status: 'success', message: `${user.name} is ${role} now.` })
+          })
+      })
+      .catch(error => console.log(error))
   }
 }
-
-
 
 module.exports = adminService
