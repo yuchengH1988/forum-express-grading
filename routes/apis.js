@@ -9,6 +9,7 @@ const adminController = require('../controllers/api/adminController.js')
 const categoryController = require('../controllers/api/categoryController.js')
 const userController = require('../controllers/api/userController.js')
 const commentController = require('../controllers/api/commentController.js')
+const restController = require('../controllers/api/restController.js')
 
 const authenticated = passport.authenticate('jwt', { session: false })
 
@@ -44,9 +45,10 @@ router.post('/admin/categories', authenticated, authenticatedAdmin, categoryCont
 router.put('/admin/categories/:id', authenticated, authenticatedAdmin, categoryController.putCategory)
 router.delete('/admin/categories/:id', authenticated, authenticatedAdmin, categoryController.deleteCategory)
 
-
 //comment
 router.post('/comments', authenticated, commentController.postComment)
 router.delete('/comments/:id', authenticated, authenticatedAdmin, commentController.deleteComment)
 
+//restaurants
+router.get('/restaurants', authenticated, restController.getRestaurants)
 module.exports = router
