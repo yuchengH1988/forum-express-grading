@@ -24,6 +24,7 @@ const authenticatedAdmin = (req, res, next) => {
 
 // JWT signin
 router.post('/signin', userController.signIn)
+router.post('/signup', userController.signUp)
 
 // admin/users
 router.get('/admin/users', authenticated, authenticatedAdmin, adminController.getUsers)
@@ -55,4 +56,21 @@ router.get('/restaurants/top', authenticated, restController.topTen)
 router.get('/restaurants/feeds', authenticated, restController.getFeeds)
 router.get('/restaurants/:id', authenticated, restController.getRestaurant)
 router.get('/restaurants/:id/dashboard', authenticated, restController.getDashboard)
+
+//users
+router.get('/users/top', authenticated, userController.getTopUser)
+router.get('/users/:id', authenticated, userController.getUser)
+router.get('/users/:id/edit', authenticated, userController.editUser)
+router.put('/users/:id', authenticated, upload.single('image'), userController.putUser)
+//favorite
+router.post('/favorite/:restaurantId', authenticated, userController.addFavorite)
+router.delete('/favorite/:restaurantId', authenticated, userController.removeFavorite)
+//Like
+router.post('/like/:restaurantId', authenticated, userController.addLike)
+router.delete('/like/:restaurantId', authenticated, userController.removeLike)
+//following
+router.post('/following/:userId', authenticated, userController.addFollowing)
+router.delete('/following/:userId', authenticated, userController.removeFollowing)
+
+
 module.exports = router
