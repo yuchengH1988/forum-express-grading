@@ -24,7 +24,6 @@ const adminService = {
     })
       .catch(error => console.log(error))
   },
-
   postRestaurant: (req, res, callback) => {
     if (!req.body.name) {
       return callback({ status: 'error', message: "name didn't exist" })

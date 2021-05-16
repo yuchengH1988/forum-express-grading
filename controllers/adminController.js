@@ -20,7 +20,6 @@ const adminController = {
       return res.render('admin/restaurant', data)
     })
   },
-
   createRestaurant: (req, res) => {
     Category.findAll({
       raw: true,
