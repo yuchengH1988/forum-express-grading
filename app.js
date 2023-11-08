@@ -5,6 +5,7 @@ const bodyParser = require('body-parser')
 const methodOverride = require('method-override')
 const flash = require('connect-flash')
 const session = require('express-session')
+const cors = require('cors')
 const app = express()
 const port = process.env.PORT || 3000
 if (process.env.NODE_ENV !== 'production') {
@@ -20,6 +21,7 @@ app.use(session({ secret: 'secret', resave: false, saveUninitialized: false }))
 app.use(passport.initialize())
 app.use(passport.session())
 app.use(flash())
+app.use(cors())
 app.use(methodOverride('_method'))
 app.use('/upload', express.static(__dirname + '/upload'))
 
